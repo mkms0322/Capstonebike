@@ -234,7 +234,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 //    textView.text = "0.0 km/h\n이동 거리: 0.0 km"
                 //}
 
-git
+
 
             }
             locationUpdateHandler.postDelayed({ updateLocation() }, UPDATE_INTERVAL)
