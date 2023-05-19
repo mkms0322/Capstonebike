@@ -77,4 +77,8 @@ dependencies {
 
     // 그래프
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    // 칼만 필터
+    implementation 'org.apache.commons:commons-math3:3.6.1'
 }

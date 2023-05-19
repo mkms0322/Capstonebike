@@ -2,6 +2,7 @@ package com.example.wifiwithkotlin
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.wifiwithkotlin.databinding.ActivityGraphBinding
 import com.github.mikephil.charting.charts.BarChart
@@ -13,25 +14,31 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.Math.round
 import java.util.Arrays
 
 class GraphActivity : AppCompatActivity() {
 
-    private lateinit var binding:ActivityGraphBinding
+    private lateinit var binding: ActivityGraphBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding  = ActivityGraphBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setChartView()
+        val jsonString = intent.getStringExtra("mapJson")
+        val mapType = object : TypeToken<MutableMap<String, Float>>() {}.type
+        val mm = Gson().fromJson<MutableMap<String, Float>>(jsonString, mapType)
+
+        setChartView(mm)
     }
 
 
-
-    private fun setChartView() {
+    private fun setChartView(mm: MutableMap<String, Float>) {
         var chartWeek = binding.chartGraph
-        setWeek(chartWeek)
+        setWeek(chartWeek, mm)
     }
 
     private fun initBarDataSet(barDataSet: BarDataSet) {
@@ -45,28 +52,23 @@ class GraphActivity : AppCompatActivity() {
         barDataSet.valueTextSize = 12f
     }
 
-    private fun setWeek(barChart: BarChart) {
+    private fun setWeek(barChart: BarChart, mm: MutableMap<String, Float>) {
         initBarChart(barChart)
 
         barChart.setScaleEnabled(false) //Zoom In/Out
 
-        var userList = ArrayList<String>(Arrays.asList("김진욱","이원찬","권민구","박진성"))
+        var userList = mm.keys.toTypedArray()
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(userList)
-        val valueList = ArrayList<Double>()
+        val valueList = mm.values.toTypedArray()
         val entries: ArrayList<BarEntry> = ArrayList()
-        val title = "운동량"
-
-        //input data
-        for (i in 1..4) {
-            valueList.add(i * 100.1)
-        }
+        val title = "이동 거리 (단위: Km)"
 
         //fit the data into a bar
         for (i in 0 until valueList.size) {
-            val barEntry = BarEntry(i.toFloat(), valueList[i].toFloat())
+            // if (i >= 10) break  // 10등까지만 표시하도록 함
+            val barEntry = BarEntry(i.toFloat(), round(valueList[i] * 100000)/100000.0f) // 센티미터까지 표시
             entries.add(barEntry)
         }
-
 
         val barDataSet = BarDataSet(entries, title)
         val data = BarData(barDataSet)
@@ -135,4 +137,6 @@ class GraphActivity : AppCompatActivity() {
         //setting the location of legend outside the chart, default false if not set
         legend.setDrawInside(false)
     }
+
+
 }

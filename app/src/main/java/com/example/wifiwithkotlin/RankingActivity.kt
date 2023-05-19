@@ -10,12 +10,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
 
 class RankingActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityRankingBinding
     lateinit var firebaseDatabase: FirebaseDatabase
     lateinit var databaseReference : DatabaseReference
+
+    var mm = mutableMapOf<String,Float>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +30,9 @@ class RankingActivity : AppCompatActivity() {
         getData()
 
         binding.btnGraph.setOnClickListener {
-            val intent = Intent(this,GraphActivity::class.java)
+            val jsonString = Gson().toJson(mm)
+            val intent = Intent(this, GraphActivity::class.java)
+            intent.putExtra("mapJson", jsonString)
             startActivity(intent)
         }
 
@@ -40,7 +45,7 @@ class RankingActivity : AppCompatActivity() {
     }
 
     fun getData(){
-       var mm = mutableMapOf<String,Float>()
+
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(shot in snapshot.children) {

@@ -1,5 +1,6 @@
 package com.example.wifiwithkotlin
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -27,6 +28,12 @@ import com.google.firebase.database.FirebaseDatabase
 import java.util.Date
 import java.util.Locale
 import kotlin.math.round
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.location.LocationListener
+import android.location.LocationManager
 
 private val latLngList = mutableListOf<LatLng>()
 private var movedistance = 0.0f // 누적 이동 거리
@@ -138,12 +145,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val cameraPosition = CameraPosition.Builder().target(LatLng(37.375191, 126.632868)).zoom(16f).build()
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         // 위치 권한 요청
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
             return
@@ -298,3 +305,4 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 }
+
