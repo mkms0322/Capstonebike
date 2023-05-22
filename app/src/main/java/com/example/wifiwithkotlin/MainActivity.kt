@@ -285,8 +285,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnRoute.setOnClickListener {
-            val intent = Intent(this, RouteActivity::class.java)
-            intent.putExtra("distance", user_distance)
+            val intent = Intent(this, ListActivity::class.java)
+            //intent.putExtra("distance", user_distance)
             startActivity(intent)
         }
 

@@ -36,7 +36,8 @@ import android.location.LocationListener
 import android.location.LocationManager
 
 private val latLngList = mutableListOf<LatLng>()
-private var movedistance = 0.0f // 누적 이동 거리
+private val uploadList = mutableListOf<myLatLng>()
+private var movedistance = 0.0f // 누적 이동 거리 (단위: m)
 
 //data class GPS(val latitude: Double, val longitude: Double)
 
@@ -84,7 +85,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             intent.putExtra("now_dis", user_dis_int)
             Log.e("보내는 거리", "보내는 거리: $user_dis_int")
 
-            val arrayData = latLngList
+            val arrayData = uploadList
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
             val parentRef: DatabaseReference = database.reference.child("$user_name")
 
@@ -92,15 +93,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             val childRef: DatabaseReference = parentRef.child("$currentTime")
             // 경로 데이터를 저장할 고유한 키 생성
-            val pathKey = childRef.child(currentTime).push().key
+            // val pathKey = childRef.child(currentTime).push().key
 
-            // 경로 데이터를 해당 고유한 키로 저장
+            // 경로 데이터를 저장
             childRef.setValue(arrayData)
                 .addOnSuccessListener {
-                    println("데이터가 성공적으로 업로드되었습니다.")
+                    // childRef.child("이동거리").setValue(user_dis_int) // 해당 시간에 이동한 경로의 이동거리 표시
+                    Log.e("업로드 성공", "업로드 성공")
                 }
                 .addOnFailureListener { error ->
-                    println("데이터 업로드 중 오류 발생: $error")
+                    Log.e("업로드 실패", "업로드 실패")
                 }
 
             setResult(RESULT_OK, intent)
@@ -129,12 +131,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //            }
 
             latLngList.clear()
+            uploadList.clear()
             mMap.clear()
             movedistance = 0.0f
             val textView: TextView = findViewById(R.id.textview)
             textView.text = "0.0 km/h\n이동 거리: 0.0 km"
-            finish()
-
             finish()
         }
     }
@@ -169,8 +170,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         startLocationUpdates()  // 현재 위치 업데이트해주기
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
+                // 위치 업로드
+                val uploadLatLng = myLatLng(location.latitude, location.longitude, location.altitude)
+                uploadList.add(uploadLatLng)
+
+                // 현재 위치 추가
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                latLngList.add(currentLatLng) // 현재 마커 위치 추가
+                latLngList.add(currentLatLng)
 
                 // 마커 연결
                 val polylineOptions = PolylineOptions().addAll(latLngList)
