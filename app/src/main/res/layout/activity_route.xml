@@ -17,10 +17,10 @@
     <TextView
         android:id="@+id/textview2"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="80dp"
         android:gravity="center"
-        android:text="총 이동 거리: 0.0 km"
-        android:textSize="30sp" />
+        android:text="총 이동 거리: 0.0 km\n예상 소모 칼로리: 0.0 kcal/kg"
+        android:textSize="26sp" />
 
 
     <Button
