@@ -61,7 +61,7 @@ class GraphActivity : AppCompatActivity() {
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(userList)
         val valueList = mm.values.toTypedArray()
         val entries: ArrayList<BarEntry> = ArrayList()
-        val title = "이동 거리 (단위: Km)"
+        val title = "활동량 순위"
 
         //fit the data into a bar
         for (i in 0 until valueList.size) {

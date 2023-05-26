@@ -55,6 +55,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //val user_dis_float:Float = 0.0f
     var user_dis_int:Float = 0.0f
+    var cal:Float = 0.0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             latLngList.clear()
             mMap.clear()
             movedistance = 0.0f
+            cal = 0.0f
             val textView: TextView = findViewById(R.id.textview)
             textView.text = "0.0 km/h\n이동 거리: 0.0 km"
             finish()
@@ -81,7 +83,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         finish_button2.setOnClickListener {
 
             val intent = Intent()
-            user_dis_int = movedistance / 1000.0f   // 단위 m -> km
+            user_dis_int = cal // 칼로리 업로드
+            // user_dis_int = movedistance / 1000.0f   // 단위 m -> km
             intent.putExtra("now_dis", user_dis_int)
             Log.e("보내는 거리", "보내는 거리: $user_dis_int")
 
@@ -134,6 +137,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             uploadList.clear()
             mMap.clear()
             movedistance = 0.0f
+            cal = 0.0f
             val textView: TextView = findViewById(R.id.textview)
             textView.text = "0.0 km/h\n이동 거리: 0.0 km"
             finish()
@@ -216,6 +220,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     // 고도 표시
                     val altitude = location.altitude
                     val printaltitude = round(altitude * 10) / 10.0f
+
+                    // 칼로리 계산
+                    val D = distance / 1000.0f // 단위 m -> km
+                    val H = uploadList[size - 2].altitude - uploadList[size - 1].altitude
+                    val T = 3   // 좌표 업로드 주기 3초
+                    val weight = user_weight
+                    var calc = (((D * 35) + (H * 0.125) + (T * 0.14)) / (weight * 1000)).toFloat()  // 단위 kcal/kg
+                    if (calc < 0.0f) calc = 0.0f
+                    cal += calc
+                    // cal = round(cal * 1000) / 1000.0f
 
                     // 출력
                     textView.text = "$printspeed km/h\n이동 거리: $printdistance km"

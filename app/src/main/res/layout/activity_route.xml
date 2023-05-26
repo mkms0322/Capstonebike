@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="center"
-        android:text="총 이동 거리: 0.0 km\n예상 소모 칼로리: 0.0 kcal/kg"
+        android:text="총 이동 거리: 0.0 km\n"
         android:textSize="26sp" />
 
 

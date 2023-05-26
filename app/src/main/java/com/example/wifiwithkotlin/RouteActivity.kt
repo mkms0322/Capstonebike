@@ -50,7 +50,7 @@ class RouteActivity : AppCompatActivity(), OnMapReadyCallback {
 
     var selectedtime = ""
     var totaldistance = 0.0f
-    var cal = 0.0f
+    //var cal = 0.0f
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +102,7 @@ class RouteActivity : AppCompatActivity(), OnMapReadyCallback {
                             // coordinates 배열을 이용하여 필요한 처리 로직을 수행합니다.
                             calcdistance(coordinates)
                             drawPolyline(coordinates)
-                            textView.text = "${user_name}의 이동 거리: ${totaldistance}km\n예상 소모 칼로리: ${cal}kcal/kg"
+                            textView.text = "${user_name}의 이동 거리: ${totaldistance}km\n"
                             setData()
                         }
 
@@ -181,14 +181,6 @@ class RouteActivity : AppCompatActivity(), OnMapReadyCallback {
             // 고도 변화 계산
             val height1 = array[i].altitude
             val height2 = array[i + 1].altitude
-
-            // 칼로리 계산
-            val D = distance / 1000.0f
-            val H = height2 - height1
-            val T = 3
-            val weight = user_weight
-            cal = (((D * 35) + (H * 0.125) + (T * 0.14)) / (weight * 1000)).toFloat()
-            cal = round(cal * 1000) / 1000.0f
 
             // 이동 거리 저장 -> 그래프 표시 해줘야 함
             val graphval = myDistance((round(totaldistance) / 1000.0f).toDouble(), array[i + 1].altitude)
